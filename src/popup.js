@@ -12,7 +12,7 @@ function toggleOptionInputsDisable(disable=null) {
 	document.querySelectorAll('.optionInput').forEach(function(element) {
 		if (disable === null) {
 			if (element.id === 'swapCols') {
-				element.style.filter = element.style.filter === 'brightness(0.5)' ? 'brightness(1)' : 'brightness(0.5)';
+				element.style.filter = element.style.filter === 'opacity(0.5)' ? 'opacity(1)' : 'opacity(0.5)';
 				element.style.pointerEvents = element.style.pointerEvents === 'auto' ? 'none' : 'auto';
 			} else if (element.id !== 'cbEnable') {
 				element.style.pointerEvents = element.style.pointerEvents === 'auto' ? 'none' : 'auto';
@@ -20,7 +20,7 @@ function toggleOptionInputsDisable(disable=null) {
 			}
 		} else {
 			if (element.id === 'swapCols') {
-				element.style.filter = disable ? 'brightness(0.5)' : 'brightness(1)';
+				element.style.filter = disable ? 'opacity(0.5)' : 'opacity(1)';
 				element.style.pointerEvents = disable ? 'none' : 'auto';
 			} else if (element.id !== 'cbEnable') {
 				element.style.pointerEvents = disable ? 'none' : 'auto';
