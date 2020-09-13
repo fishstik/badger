@@ -8,6 +8,27 @@ function getHostname(callback) {
 		}
 	});
 }
+function toggleOptionInputsDisable(disable=null) {
+	document.querySelectorAll('.optionInput').forEach(function(element) {
+		if (disable === null) {
+			if (element.id === 'swapCols') {
+				element.style.filter = element.style.filter === 'brightness(0.5)' ? 'brightness(1)' : 'brightness(0.5)';
+				element.style.pointerEvents = element.style.pointerEvents === 'auto' ? 'none' : 'auto';
+			} else if (element.id !== 'cbEnable') {
+				element.style.pointerEvents = element.style.pointerEvents === 'auto' ? 'none' : 'auto';
+				element.disabled = !element.disabled;
+			}
+		} else {
+			if (element.id === 'swapCols') {
+				element.style.filter = disable ? 'brightness(0.5)' : 'brightness(1)';
+				element.style.pointerEvents = disable ? 'none' : 'auto';
+			} else if (element.id !== 'cbEnable') {
+				element.style.pointerEvents = disable ? 'none' : 'auto';
+				element.disabled = disable;
+			}
+		}
+	});
+}
 function populateFields(cbOverride=null) {
 	getHostname((hostname) => {
 		var buttSave = document.querySelector('#save')
@@ -25,6 +46,10 @@ function populateFields(cbOverride=null) {
 			var colBadgeFG = document.querySelector('#colorFG');
 
 			if (obj[hostname]) {
+				// Populate icons before checking need to disable because they need to have optionInput class
+				if (!document.querySelector('#iconGrid').hasChildNodes()) {
+					populateIcons(obj[hostname]['iconHrefs'], parseInt(obj[hostname]['iconIndex'], 10));
+				}
 				if (obj[hostname]['enabled']) {
 					cbEnable.checked = true; //obj[hostname]['enabled'];
 					//API.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -37,14 +62,7 @@ function populateFields(cbOverride=null) {
 					//	}
 					//});
 				} else {
-					document.querySelectorAll('.optionInput').forEach(function(element) {
-						if (element.id !== 'cbEnable') {
-							element.disabled = true;
-						}
-					});
-				}
-				if (!document.querySelector('#iconGrid').hasChildNodes()) {
-					populateIcons(obj[hostname]['iconHrefs'], parseInt(obj[hostname]['iconIndex'], 10));
+					toggleOptionInputsDisable(true)
 				}
 				txtSelector.value = obj[hostname]['selector'] ? obj[hostname]['selector'] : '#counter';
 				selCondition.value = obj[hostname]['condition'] ? obj[hostname]['condition'] : 'capRegex';
@@ -57,12 +75,10 @@ function populateFields(cbOverride=null) {
 					colBadgeFG.value = badgeCfg['fgColor'];
 				}
 			} else {
+				// Default values if domain not saved
 				cbEnable.checked = false;
-				document.querySelectorAll('.optionInput').forEach(function(element) {
-					if (element.id !== 'cbEnable') {
-						element.disabled = true;
-					}
-				});
+				toggleOptionInputsDisable(true)
+
 				txtSelector.value = '#counter';
 				txtRegex.value = '(-?[\\d,]+)';
 				document.querySelector('#iconOption').style.display = 'none';
@@ -73,13 +89,8 @@ function populateFields(cbOverride=null) {
 			}
 
 			if (cbOverride !== null) {
-				document.querySelectorAll('.optionInput').forEach(function(element) {
-					if (element.id === 'cbEnable') {
-						element.checked = cbOverride;
-					} else {
-						element.disabled = !cbOverride;
-					}
-				});
+				toggleOptionInputsDisable(!cbOverride)
+				cbEnable.checked = cbOverride;
 				buttSave.disabled = false;
 			}
 
@@ -102,16 +113,19 @@ function populateIcons(hrefs, selected=NaN, size='32px') {
 
 			var img = document.createElement('img');
 			img.classList.add('icon');
+			img.classList.add('optionInput');
 			if ((selected >= 0 && i == selected) || (selected < 0 && i-hrefs.length == selected)) {
 				img.classList.add('selected');
 			}
 			img.src = href;
 			img.addEventListener('click', function() {
-				document.querySelector('#save').disabled = false;
-				document.querySelectorAll('.icon').forEach(function(icon, i) {
-					icon.classList.remove('selected');
-				})
-				img.classList.add('selected');
+				if (!img.classList.contains('selected')) {
+					document.querySelector('#save').disabled = false;
+					document.querySelectorAll('.icon').forEach(function(icon, i) {
+						icon.classList.remove('selected');
+					})
+					img.classList.add('selected');
+				}
 			});
 			divCol.appendChild(img);
 		})
