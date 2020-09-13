@@ -1,0 +1,88 @@
+body {
+	min-width: 250px;
+	background-color: white;
+	color: black;
+}
+.dark-mode {
+	background-color: #35363a;
+	color: white;
+}
+
+#domain {
+	font-weight: bold;
+}
+/* 2-col grid */
+dl {
+	margin-top: 0px;
+}
+dl>dt {
+	float: left;
+	width: 21%;
+	padding-bottom: 6px;
+	overflow: hidden;
+	text-align: right;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+dl>dd {
+	margin-left: 21%;
+	padding-left: 10px;
+	padding-bottom: 6px;
+}
+
+#cbEnable {
+	margin: 3px 3px 3px 0px;
+}
+
+#txtRegex {
+	font-family: monospace;
+	font-weight: bold;
+}
+.warning {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	color: red;
+	font-size: 11px;
+}
+
+.highlighted {
+	background-color: yellow;
+}
+/* icon grid */
+#iconGrid{
+	padding-left: 7px;
+}
+.row::after {
+	content: "";
+	clear: both;
+	display: table;
+}
+.col {
+	float: left;
+	padding: 3px;
+}
+.icon {
+	background-color: grey;
+	padding: 2px;
+	width: 16px;
+	height: 16px;
+}
+.selected {
+	outline: 3px solid #0075ff;
+}
+/* color pickers */
+.colorPicker {
+	width: 20px;
+}
+#swapCols {
+	font-size: 18px;
+	cursor: pointer;
+}
+/* dark mode toggle */
+#toggDark {
+	position: absolute;
+    right: 7px;
+	bottom: 4px;
+	font-size: 14px;
+	cursor: pointer;
+}
