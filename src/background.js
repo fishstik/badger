@@ -26,7 +26,7 @@ function handleMessage(msg, sender, sendResponse) {
 		if (msg.icon === 'active') {
 			API.browserAction.setIcon({
 				tabId: tabId,
-				path: "/src/icons/active_32.png",
+				path: "/icons/active_32.png",
 			});
 			API.browserAction.setTitle({
 				tabId: tabId,
@@ -43,7 +43,7 @@ function handleMessage(msg, sender, sendResponse) {
 		} else {
 			API.browserAction.setIcon({
 				tabId: tabId,
-				path: "/src/icons/inactive_32.png"
+				path: "/icons/inactive_32.png"
 			});
 			API.browserAction.setTitle({
 				tabId: tabId,
