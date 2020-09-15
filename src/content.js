@@ -24,10 +24,10 @@ class Favibadge {
 		//console.log(`Favibadge config: ${JSON.stringify(this.cfg_d, null, 4)}`);
 
 		this.OGFaviconHref = this.getOGFaviconHref(this.cfg_d['iconIndex']);
-		if (!this.OGFaviconHref) {
-			//console.log('Failed to find favicon! Exiting...');
-			return;
-		}
+		//if (!this.OGFaviconHref) {
+		//	console.log('Failed to find favicon! Exiting...');
+		//	return;
+		//}
 		this.unread = null;
 		this.lastUnreadCount = null;
 	}
@@ -119,6 +119,14 @@ class Favibadge {
 			return sizeA - sizeB;
 		});
 		//console.log(`Found ${icons.length} potential icons:`);
+
+		// add root icon if no icons found
+		if (!icons.length) {
+			var rootIcon = document.createElement('link');
+			rootIcon.href = 'https://' + hostname + '/favicon.ico';
+			icons.push(rootIcon);
+		}
+
 		var iconHrefs = [];
 		icons.forEach(function(icon, i) {
 			//console.log(`${i}: ${icon.href}`);
