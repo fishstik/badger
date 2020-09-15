@@ -35,7 +35,7 @@ function populateFields(cbOverride=null) {
 
 		buttSave.disabled = true;
 		document.querySelector('#domain').innerText = hostname;
-		API.storage.local.get(null, function(obj) {
+		API.storage.local.get(null, function(cfg) {
 			var cbEnable = document.querySelector('#cbEnable');
 			var txtSelector = document.querySelector('#txtSelector');
 			var selCondition = document.querySelector('#selCondition');
@@ -45,13 +45,13 @@ function populateFields(cbOverride=null) {
 			var colBadgeBG = document.querySelector('#colorBG');
 			var colBadgeFG = document.querySelector('#colorFG');
 
-			if (obj[hostname]) {
+			if (cfg[hostname]) {
 				// Populate icons before checking need to disable because they need to have optionInput class
 				if (!document.querySelector('#iconGrid').hasChildNodes()) {
-					populateIcons(obj[hostname]['iconHrefs'], parseInt(obj[hostname]['iconIndex'], 10));
+					populateIcons(cfg[hostname]['iconHrefs'], parseInt(cfg[hostname]['iconIndex'], 10));
 				}
-				if (obj[hostname]['enabled']) {
-					cbEnable.checked = true; //obj[hostname]['enabled'];
+				if (cfg[hostname]['enabled']) {
+					cbEnable.checked = true; //cfg[hostname]['enabled'];
 					//API.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 					//	if (tabs[0].url) {
 					//		API.runtime.sendMessage({
@@ -64,11 +64,11 @@ function populateFields(cbOverride=null) {
 				} else {
 					toggleOptionInputsDisable(true)
 				}
-				txtSelector.value = obj[hostname]['selector'] ? obj[hostname]['selector'] : '#counter';
-				selCondition.value = obj[hostname]['condition'] ? obj[hostname]['condition'] : 'capRegex';
-				txtRegex.value = obj[hostname]['regex'] ? obj[hostname]['regex'] : '(-?[\\d,]+)';
-				if (obj[hostname]['badgeCfg']) {
-					badgeCfg = obj[hostname]['badgeCfg'];
+				txtSelector.value = cfg[hostname]['selector'];
+				selCondition.value = cfg[hostname]['condition'] ? cfg[hostname]['condition'] : 'capRegex';
+				txtRegex.value = cfg[hostname]['regex'] ? cfg[hostname]['regex'] : '(-?[\\d,]+)';
+				if (cfg[hostname]['badgeCfg']) {
+					badgeCfg = cfg[hostname]['badgeCfg'];
 					selBadgeStyle.value = badgeCfg['style'];
 					selBadgeShape.value = badgeCfg['shape'];
 					colBadgeBG.value = badgeCfg['bgColor'];
@@ -79,7 +79,7 @@ function populateFields(cbOverride=null) {
 				cbEnable.checked = false;
 				toggleOptionInputsDisable(true)
 
-				txtSelector.value = '#counter';
+				txtSelector.value = 'title';
 				txtRegex.value = '(-?[\\d,]+)';
 				document.querySelector('#iconOption').style.display = 'none';
 				selBadgeStyle.value = 'badge';
@@ -130,7 +130,8 @@ function populateIcons(hrefs, selected=NaN, size='32px') {
 			divCol.appendChild(img);
 		})
 	} else {
-		console.log('No hrefs provided to populateIcons');
+		//console.log('No hrefs provided to populateIcons');
+		document.querySelector('#iconOption').style.display = 'none';
 	}
 }
 function updateTxtRegexVisibility() {
@@ -146,6 +147,8 @@ function updateTxtRegexVisibility() {
 	}
 }
 function updateWarnings() {
+	var saveBtn = document.querySelector('#save');
+
 	var capRegexWarning = document.querySelector('#capRegexWarning');
 	capRegexWarning.style.display = 'none';
 	if (document.querySelector('#selCondition').value === 'capRegex') {
@@ -154,8 +157,17 @@ function updateWarnings() {
 		str = str.replace('\\)', '');
 		if (!(str.includes('(') && str.includes(')'))) {
 			capRegexWarning.style.display = 'initial';
-			document.querySelector('#save').disabled = true;
+			saveBtn.disabled = true;
 		}
+	}
+	var txtSelector = document.querySelector('#txtSelector');
+	var txtSelWarning = document.querySelector('#txtSelWarning');
+	txtSelWarning.style.display = 'none';
+	try {
+		document.querySelector(txtSelector.value);
+	} catch (err) {
+		txtSelWarning.style.display = 'initial';
+		saveBtn.disabled = true;
 	}
 }
 function save() {

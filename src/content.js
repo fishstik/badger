@@ -1,8 +1,8 @@
-//import Favibadge from './favibadge.js';
+var API = chrome || browser;
 
 class Favibadge {
 	constructor(cfg_d) {
-		console.log('Favibadge init...');
+		//console.log('Favibadge init...');
 		this.cfg_d = {
 			'size': 32,
 			'selector': null,
@@ -23,9 +23,6 @@ class Favibadge {
 		}, {});
 		console.log(`Favibadge config: ${JSON.stringify(this.cfg_d, null, 4)}`);
 
-		if (!this.cfg_d['selector']) {
-			console.log('No selector!');
-		}
 		this.OGFaviconHref = this.getOGFaviconHref(this.cfg_d['iconIndex']);
 		if (!this.OGFaviconHref) {
 			console.log('Failed to find favicon! Exiting...');
@@ -36,7 +33,7 @@ class Favibadge {
 	}
 	poll() {
 		//console.log('Favibadge poll');
-		if (this.cfg_d['selector']) {
+		try {
 			var countElements = document.querySelectorAll(this.cfg_d['selector']);
 			//console.log('Found counter elements:');
 			//console.log(countElements);
@@ -107,6 +104,8 @@ class Favibadge {
 				this.getFaviconCanvas((canvas) => { this.setIcon(canvas.toDataURL('image/png')); });
 				this.lastUnreadCount = count;
 			}
+		} catch (err) {
+			console.log(`Invalid selector \'${this.cfg_d['selector']}\'`);
 		}
 	}
 	getOGFaviconHref(index=null) {
@@ -265,8 +264,6 @@ class FavibadgeInstance {
 		this.favibadge.poll();
 	}
 }
-
-var API = chrome || browser;
 
 //API.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
 //	if (msg.action === "sendBadge") {

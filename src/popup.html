@@ -9,48 +9,50 @@
 		<p id="domain"></p>
 		<dl>
 			<dt>enabled</dt>             <dd class="colR"><input type="checkbox" class="optionInput" id="cbEnable"/></dd>
-			<dt>selector</dt>            <dd class="colR"><input type="text"     class="optionInput" id="txtSelector"/></dd>
-			<dt>condition</dt>
-			<dd class="colR">
-				<select class="optionInput" id="selCondition">
-					<option value="capRegex">capture regex</option>
-					<option value="exists">exists</option>
-					<option value="notExists">doesn't exist</option>
-					<option value="matchRegex">matches regex</option>
-					<option value="notMatchRegex">doesn't match regex</option>
-					<option value="count">count occurrences</option>
-				</select>
-			</dd>
-			<dt id='colLRegex'>regex</dt>
-			<dd class="colR" id='colRRegex'>
-				<input type="text" class="optionInput" id="txtRegex"/>
-				<br>
-				<p class="warning" id="capRegexWarning">regex must have capture parentheses</p>
-			</dd>
+			<dt>selector</dt>            <dd class="colR">
+			                                 <input type="text" class="optionInput" id="txtSelector"/>
+			                                 <br>
+			                                 <p class="warning" id="txtSelWarning">invalid selector</p>
+			                             </dd>
+			<dt>condition</dt>           <dd class="colR">
+			                                 <select class="optionInput" id="selCondition">
+			                                    <option value="capRegex">capture regex</option>
+			                                    <option value="exists">exists</option>
+			                                    <option value="notExists">doesn't exist</option>
+			                                    <option value="matchRegex">matches regex</option>
+			                                    <option value="notMatchRegex">doesn't match regex</option>
+			                                    <option value="count">count occurrences</option>
+			                                 </select>
+			                             </dd>
+			<dt id='colLRegex'>regex</dt><dd class="colR" id='colRRegex'>
+			                                 <input type="text" class="optionInput" id="txtRegex"/>
+			                                 <br>
+			                                 <p class="warning" id="capRegexWarning">regex must have capture parentheses</p>
+			                             </dd>
 			<dt id='iconOption'>icon</dt><dd class="colR" id="iconGrid"></dd>
-			<dt>indicator</dt>
-			<dd class="colR">
-				<dl>
-					<dt>style</dt>
-					<dd><select id="style" class="optionInput">
-						<option value="badge">badge</option>
-						<option value="overlay">overlay</option>
-					</select></dd>
-					<dt>shape</dt>
-					<dd><select id="shape" class="optionInput">
-						<option value="round">round</option>
-						<option value="square">square</option>
-						<option value="none">none</option>
-					</select></dd>
-					<dt>color</dt>
-					<dd>
-						bg<input type="color" class="colorPicker optionInput" id="colorBG">
-						<a id="swapCols" class="badgeLabel optionInput" title="swap background and foreground colors">⇆</a>
-						<input type="color" class="colorPicker optionInput" id="colorFG">fg
-					</dd>
-					<!--<p><div id="previewIcon">icon</div></p>-->
-				</dl>
-			</dd>
+			<dt>indicator</dt>           <dd class="colR">
+			                                 <dl>
+			                                     <dt>style</dt><dd>
+			                                                       <select id="style" class="optionInput">
+			                                                           <option value="badge">badge</option>
+			                                                           <option value="overlay">overlay</option>
+			                                                       </select>
+			                                                   </dd>
+			                                     <dt>shape</dt><dd>
+			                                                       <select id="shape" class="optionInput">
+			                                                           <option value="round">round</option>
+			                                                           <option value="square">square</option>
+			                                                           <option value="none">none</option>
+			                                                       </select>
+			                                                   </dd>
+			                                     <dt>color</dt><dd>
+			                                                       bg<input type="color" class="colorPicker optionInput" id="colorBG">
+			                                                       <a id="swapCols" class="badgeLabel optionInput" title="swap background and foreground colors">⇆</a>
+			                                                       <input type="color" class="colorPicker optionInput" id="colorFG">fg
+			                                                   </dd>
+			                                     <!--<p><div id="previewIcon">icon</div></p>-->
+			                                 </dl>
+			                             </dd>
 		</dl>
 		<button id="save">save</button> <button id="reload">reload page</button> <button id="reset">reset</button>
 		<a id="toggDark" title="toggle dark mode"></a>
