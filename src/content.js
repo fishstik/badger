@@ -21,11 +21,11 @@ class Favibadge {
 			Object.keys(o).forEach(function (k) { r[k] = o[k]; });
 			return r;
 		}, {});
-		console.log(`Favibadge config: ${JSON.stringify(this.cfg_d, null, 4)}`);
+		//console.log(`Favibadge config: ${JSON.stringify(this.cfg_d, null, 4)}`);
 
 		this.OGFaviconHref = this.getOGFaviconHref(this.cfg_d['iconIndex']);
 		if (!this.OGFaviconHref) {
-			console.log('Failed to find favicon! Exiting...');
+			//console.log('Failed to find favicon! Exiting...');
 			return;
 		}
 		this.unread = null;
@@ -129,11 +129,11 @@ class Favibadge {
 		API.storage.local.set({[hostname]: this.cfg_d});
 
 		if (index !== null) {
-			console.log(`Picked icon ${index} from cfg`);
+			//console.log(`Picked icon ${index} from cfg`);
 			//console.log(icons[index]);
 			return iconHrefs[index];
 		} else {
-			console.log(`Picked icon ${iconHrefs.length-1}`);
+			//console.log(`Picked icon ${iconHrefs.length-1}`);
 			return iconHrefs.slice(-1)[0];
 		}
 	}
@@ -229,7 +229,7 @@ class Favibadge {
 					ctx.fillStyle = fgColor;
 					ctx.fillText(chars, textX, textY);
 				} else {
-					console.log(`Invalid badge style \'${style}\'`);
+					//console.log(`Invalid badge style \'${style}\'`);
 				}
 				
 				this.drawnCanvases[chars] = charCanvas;
@@ -259,7 +259,7 @@ class Favibadge {
 class FavibadgeInstance {
 	constructor(cfg_d = {}) {
 		this.favibadge = new Favibadge(cfg_d);
-		console.log('Favibadge polling...');
+		//console.log('Favibadge polling...');
 		this.timer = setInterval(this.favibadge.poll.bind(this.favibadge), 500);
 		this.favibadge.poll();
 	}
@@ -274,14 +274,14 @@ class FavibadgeInstance {
 var hostname = window.location.hostname;
 (function Extension() {
 	API.storage.local.get(null, function(obj) {
-		console.log(obj);
+		//console.log(obj);
 		var cfg_d = obj[hostname] ? obj[hostname] : {'enabled': false};
 		if (cfg_d['enabled']) {
 			API.runtime.sendMessage({action: 'updateIcon', icon: 'active'});
 			return new FavibadgeInstance(cfg_d);
 		} else {
 			API.runtime.sendMessage({action: 'updateIcon', icon: 'inactive'});
-			console.log(`Favibadge not enabled for ${hostname}`);
+			//console.log(`Favibadge not enabled for ${hostname}`);
 			return;
 		}
 	});
