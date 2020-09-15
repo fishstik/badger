@@ -3,7 +3,10 @@
 	"version": "0.1.0",
 	"description": "The universal favicon badger",
 	"icons": {
-		"32": "/icons/inactive_32.png"
+		"16":  "/icons/active_16.png",
+		"32":  "/icons/active_32.png",
+		"48":  "/icons/active_48.png",
+		"128": "/icons/active_128.png"
 	},
 	"manifest_version": 2,
 	"background": {
@@ -21,6 +24,7 @@
 	],
 	"browser_action": {
 		"default_title": "Shaking Badger",
-		"default_popup": "/popup.html"
+		"default_popup": "/popup.html",
+		"default_icon": "/icons/inactive_32.png"
 	}
 }
