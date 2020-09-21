@@ -6,7 +6,9 @@ This browser extension allows you to add an indicator to any site's favicon. Bui
 
 ### Installation
 
-Install in [Chrome](https://developer.chrome.com/extensions/getstarted#unpacked) or [Firefox](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/) as an unpacked extension. Publication to extension stores coming soon!
+Install from [Chrome Web Store](https://chrome.google.com/webstore/detail/shaking-badger/gafjecdpjgeeapalfnbdlpjmcojmpjjg) and Firefox Addons (coming soon).
+
+Install from source as an unpacked extension in [Chrome](https://developer.chrome.com/extensions/getstarted#unpacked) or [Firefox](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/).
 
 ### Usage
 
