@@ -1,11 +1,14 @@
 var API = chrome || browser;
 
-function getHostname(callback) {
+function getActiveTab(callback) {
 	API.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-		if (tabs[0].url) {
-			var url = new URL(tabs[0].url);
-			callback(url.hostname);
+		if (tabs[0] && tabs[0].url) {
+			callback(tabs[0]);
 		}
+		//if (tabs[0] && tabs[0].url) {
+		//	var url = new URL(tabs[0].url);
+		//	callback(url.hostname);
+		//}
 	});
 }
 function toggleOptionInputsDisable(disable=null) {
@@ -30,7 +33,10 @@ function toggleOptionInputsDisable(disable=null) {
 	});
 }
 function populateFields(cbOverride=null) {
-	getHostname((hostname) => {
+	getActiveTab((tab) => {
+		var url = new URL(tab.url);
+		var hostname = url.hostname;
+
 		var buttSave = document.querySelector('#save')
 
 		buttSave.disabled = true;
@@ -151,7 +157,7 @@ function updateWarnings() {
 
 	var capRegexWarning = document.querySelector('#capRegexWarning');
 	capRegexWarning.style.display = 'none';
-	if (document.querySelector('#selCondition').value === 'capRegex') {
+	if (['capRegex', 'sum'].includes(document.querySelector('#selCondition').value)) {
 		var str = document.querySelector('#txtRegex').value;
 		str = str.replace('\\(', '');
 		str = str.replace('\\)', '');
@@ -171,43 +177,37 @@ function updateWarnings() {
 	}
 }
 function save() {
-	var cbEnable = document.querySelector('#cbEnable');
-	var txtSelector = document.querySelector('#txtSelector');
-	var selCondition = document.querySelector('#selCondition');
-	var txtRegex = document.querySelector('#txtRegex');
-	var selBadgeStyle = document.querySelector('#style');
-	var selBadgeShape = document.querySelector('#shape');
-	var colBadgeBG = document.querySelector('#colorBG');
-	var colBadgeFG = document.querySelector('#colorFG');
-	getHostname((hostname) => {
+	const cbEnable = document.querySelector('#cbEnable');
+
+	getActiveTab((tab) => {
+		const url = new URL(tab.url);
+		const hostname = url.hostname;
+
 		API.storage.local.get(null, function(obj) {
 			var cfg_d = obj[hostname] ? obj[hostname] : {};
 			cfg_d['enabled'] = cbEnable.checked;
 			if (cbEnable.checked) {
-				cfg_d['selector'] = txtSelector.value;
-				cfg_d['condition'] = selCondition.value;
-				cfg_d['regex'] = txtRegex.value;
+				cfg_d['selector']  = document.querySelector('#txtSelector').value;
+				cfg_d['condition'] = document.querySelector('#selCondition').value;
+				cfg_d['regex']     = document.querySelector('#txtRegex').value;
 				document.querySelectorAll('.icon').forEach(function(icon, i) {
 					if (icon.classList.contains('selected')) {
 						cfg_d['iconIndex'] = i;
 					}
 				})
-				if (!cfg_d['badgeCfg']) { cfg_d['badgeCfg'] = {}; }
-				cfg_d['badgeCfg']['style'] = selBadgeStyle.value;
-				cfg_d['badgeCfg']['shape'] = selBadgeShape.value;
-				cfg_d['badgeCfg']['bgColor'] = colBadgeBG.value;
-				cfg_d['badgeCfg']['fgColor'] = colBadgeFG.value;
-			//} else {
-			//	txtSelector.disabled = true;
-			//	txtRegex.disabled = true;
-			//	selBadgeStyle.disabled = true;
-			//	selBadgeShape.disabled = true;
-			//	colBadgeBG.disabled = true;
-			//	colBadgeFG.disabled = true;
+				cfg_d['badgeCfg'] = cfg_d['badgeCfg'] || {};
+				cfg_d['badgeCfg']['style']   = document.querySelector('#style').value;
+				cfg_d['badgeCfg']['shape']   = document.querySelector('#shape').value;
+				cfg_d['badgeCfg']['bgColor'] = document.querySelector('#colorBG').value;
+				cfg_d['badgeCfg']['fgColor'] = document.querySelector('#colorFG').value;
+
+				if (tab.favIconUrl && !cfg_d['favIconUrl']) {
+					cfg_d['favIconUrl'] = tab.favIconUrl;
+				}
 			}
 			API.storage.local.set({[hostname]: cfg_d});
-			console.log('Submitted');
-			console.log(`${JSON.stringify(cfg_d, null, 4)}`);
+			//console.log('Submitted');
+			//console.log(`${JSON.stringify(cfg_d, null, 4)}`);
 		});
 	});
 }
@@ -281,7 +281,9 @@ document.querySelector('#reload').addEventListener('click', function() {
 });
 // reset button click
 document.querySelector('#reset').addEventListener('click', function() {
-	getHostname((hostname) => {
+	getActiveTab((tab) => {
+		var url = new URL(tab.url);
+		var hostname = url.hostname;
 		API.storage.local.remove([hostname]);
 		populateFields();
 	});

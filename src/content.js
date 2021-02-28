@@ -80,11 +80,25 @@ class Favibadge {
 						count = this.countElements.length.toString();
 					}
 					break;
+				case 'sum':
+					if (this.countElements !== null && this.countElements !== undefined) {
+						const texts = Array.prototype.map.call(this.countElements, function(n) { return n.innerText; });
+						const regex = this.cfg_d['regex'];
+						var counts = [];
+						texts.forEach(function(text, i) {
+							const m = text.match(regex);
+							if (m) {
+								counts.push(text);
+							}
+						})
+						count = Math.floor(counts.reduce((a,b) => parseFloat(a)+parseFloat(b), 0)).toString();
+					}
+					break;
 				default:
 					console.log(`Invalid condition \'${this.cfg_d['condition']}\'`);
 			}
 			//console.log(`Found count \'${count}\' (last = \'${this.lastUnreadCount}\')`);
-			if (count != this.lastUnreadCount && count !== '0' && count !== undefined) {
+			if (!([this.lastUnreadCount, '0', 'NaN'].includes(count)) && count !== undefined) {
 				//console.log(`Drawing \'${count}\' on favicon`);
 				this.drawBadgeOnFavicon(
 					count,
@@ -106,11 +120,11 @@ class Favibadge {
 			}
 		} catch (err) {
 			console.log(`Invalid selector \'${this.cfg_d['selector']}\'`);
+			console.log(err);
 		}
 	}
 	getOGFaviconHref(index=null) {
-		var icons = [].slice.call(document.getElementsByTagName('link'));
-		icons = icons.filter((link) => link.hasAttribute('rel') && link.getAttribute('rel').includes('icon'));
+		var icons = [].slice.call(document.head.querySelectorAll('link[rel*="icon"]'));
 		icons = icons.sort((a, b) => {
 			const sizeA = a.getAttribute('sizes') ? parseInt(a.getAttribute('sizes').split('x')[0], 10) : 0;
 			const sizeB = b.getAttribute('sizes') ? parseInt(b.getAttribute('sizes').split('x')[0], 10) : 0;
@@ -153,16 +167,17 @@ class Favibadge {
 			this.faviconCanvas.height = size;
 
 			const ctx = this.faviconCanvas.getContext('2d');
-			const img = new Image();
 
-			img.crossOrigin = 'anonymous'; // allow for icons hosted on other domains
-			img.addEventListener('load', () => {
-				ctx.drawImage(img, 0, 0, size, size);
-				//ctx.strokeStyle = "red";
-				//ctx.strokeRect(1, 1, size-2, size-2);
-				callback(this.faviconCanvas);
-			}, true);
-			img.src = this.OGFaviconHref;
+			const img = new Image();
+			img.crossOrigin = 'anonymous';
+			//img.src = this.OGFaviconHref;
+			img.src = this.cfg_d['favIconUrl'];
+			img.decode()
+				.then(() => {
+					ctx.drawImage(img, 0, 0, size, size);
+					callback(this.faviconCanvas);
+				})
+				.catch(err => console.log(err));
 		} else {
 			callback(this.faviconCanvas);
 		}
@@ -247,13 +262,14 @@ class Favibadge {
 	}
 	setIcon(url) {
 		var head = document.getElementsByTagName('head')[0];
-		const links = head.getElementsByTagName('link');
+		const links = Array.from(head.getElementsByTagName('link'));
 		// remove old icon
 		[].forEach.call(links, function(link) {
 			if (link.rel === 'shortcut icon' || link.rel === 'icon') {
+				//console.log(`Removing link ${link.href}`);
 				head.removeChild(link);
 			}
-		})
+		});
 		// add new icon
 		const newIcon = document.createElement('link');
 		newIcon.type = 'image/png';
