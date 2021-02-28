@@ -115,6 +115,7 @@ function populateIcons(hrefs, selected=NaN, size='32px') {
 		hrefs.forEach(function(href, i) {
 			var divCol = document.createElement('div');
 			divCol.className = 'col';
+			divCol.title = href.substring(href.lastIndexOf('/')+1);
 			divRow.appendChild(divCol);
 
 			var img = document.createElement('img');
