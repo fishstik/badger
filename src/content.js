@@ -142,20 +142,35 @@ class Favibadge {
 		}
 
 		var iconHrefs = [];
+		var tabFaviconIndex = null;
+		var tabFaviconHref = this.cfg_d['favIconUrl'];
 		icons.forEach(function(icon, i) {
 			//console.log(`${i}: ${icon.href}`);
 			iconHrefs.push(icon.href);
+			if (icon.href === tabFaviconHref) {
+				tabFaviconIndex = i;
+			}
 		})
 		// save icon href list to local storage for use in popup.html
 		this.cfg_d['iconHrefs'] = iconHrefs;
 		API.storage.local.set({[hostname]: this.cfg_d});
 
 		if (index !== null) {
+			// user-selected index
 			//console.log(`Picked icon ${index} from cfg`);
-			//console.log(icons[index]);
 			return iconHrefs[index];
+		} else if (tabFaviconIndex !== null) {
+			// index of href that matches tab favicon
+
+			// save to user-selected index
+			this.cfg_d['iconIndex'] = tabFaviconIndex;
+			API.storage.local.set({[hostname]: this.cfg_d});
+
+			//console.log(`Picked icon ${tabFaviconIndex} from tab favicon`);
+			return iconHrefs[tabFaviconIndex];
 		} else {
-			//console.log(`Picked icon ${iconHrefs.length-1}`);
+			// last index
+			console.log(`Picked last icon ${iconHrefs.length-1}`);
 			return iconHrefs.slice(-1)[0];
 		}
 	}
@@ -170,8 +185,8 @@ class Favibadge {
 
 			const img = new Image();
 			img.crossOrigin = 'anonymous';
-			//img.src = this.OGFaviconHref;
-			img.src = this.cfg_d['favIconUrl'];
+			img.src = this.OGFaviconHref;
+			//img.src = this.cfg_d['favIconUrl'];
 			img.decode()
 				.then(() => {
 					ctx.drawImage(img, 0, 0, size, size);
